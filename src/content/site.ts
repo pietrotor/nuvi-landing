@@ -19,7 +19,7 @@ export const site = {
 		{ label: 'Ver la demo', href: '#demo' },
 		{ label: 'Cómo atiende', href: '#como-atiende' },
 		{ label: 'Qué resuelve', href: '#que-resuelve' },
-		{ label: 'Tu panel', href: '#tu-panel' },
+		{ label: 'Tu panel', href: 'https://app.nuvi.lat/' },
 		{ label: 'Preguntas', href: '#preguntas' },
 	],
 	cta: {
