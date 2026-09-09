@@ -1,0 +1,7 @@
+dist
+node_modules
+.astro
+pnpm-lock.yaml
+
+# Skills vendorizadas: se instalan tal cual y `skills-lock.json` fija su hash.
+.agents/skills

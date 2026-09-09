@@ -1,0 +1,154 @@
+---
+import { Icon } from 'astro-icon/components';
+import { site } from '../content/site';
+
+const chat = site.heroChat;
+---
+
+<figure class="hero-whatsapp m-0" aria-labelledby="hero-whatsapp-caption">
+	<div class="hero-whatsapp-phone wa-phone-shell p-1.5" data-hero-whatsapp>
+		<div class="wa-phone flex h-[39rem] flex-col overflow-hidden">
+			<div
+				class="wa-statusbar flex h-7 items-center justify-between px-5 text-[0.625rem]"
+			>
+				<strong>{chat.statusBarTime}</strong>
+				<span class="flex items-center gap-1" aria-hidden="true">
+					<Icon name="ph:cell-signal-high" class="size-3" />
+					<Icon name="ph:wifi-high" class="size-3" />
+					<Icon name="ph:battery-high" class="size-3.5" />
+				</span>
+			</div>
+
+			<header class="hero-whatsapp-header">
+				<Icon name="ph:caret-left" class="size-5 shrink-0" aria-hidden="true" />
+				<span class="hero-whatsapp-avatar">{chat.avatar}</span>
+				<span class="min-w-0">
+					<strong>{chat.contact}</strong>
+					<small>{chat.onlineStatus}</small>
+				</span>
+				<span class="ml-auto flex items-center gap-3" aria-hidden="true">
+					<Icon name="ph:video-camera" class="size-4.5" />
+					<Icon name="ph:phone" class="size-4.5" />
+					<Icon name="ph:dots-three-vertical" class="size-4.5" />
+				</span>
+			</header>
+
+			<div class="hero-whatsapp-chat wa-wallpaper" data-hero-whatsapp-chat>
+				<span
+					class="wa-date mx-auto rounded-md px-2.5 py-1 text-[0.5625rem] font-medium uppercase"
+				>
+					{chat.todayLabel}
+				</span>
+
+				{
+					chat.messages.map((message, index) => (
+						<div
+							class:list={[
+								'hero-whatsapp-message wa-bubble',
+								message.direction === 'outgoing'
+									? 'wa-bubble--outgoing self-end'
+									: 'wa-bubble--incoming self-start',
+							]}
+							data-hero-message={index}
+						>
+							{message.direction === 'incoming' && (
+								<strong class="wa-assistant-label">{chat.assistantIdentity}</strong>
+							)}
+							<p>{message.text}</p>
+							<span class="wa-message-meta">
+								{message.time}
+								{message.direction === 'outgoing' && (
+									<Icon name="ph:checks" class="wa-checks size-3" aria-hidden="true" />
+								)}
+							</span>
+						</div>
+					))
+				}
+
+				<div
+					class="hero-whatsapp-typing wa-bubble wa-bubble--incoming wa-typing-bubble self-start"
+					data-hero-typing
+					aria-hidden="true"
+				>
+					<span class="wa-typing-dot"></span>
+					<span class="wa-typing-dot"></span>
+					<span class="wa-typing-dot"></span>
+					<small>{chat.typingLabel}</small>
+				</div>
+			</div>
+
+			<div class="hero-whatsapp-composer">
+				<div>
+					<Icon name="ph:smiley" class="size-5" aria-hidden="true" />
+					<span>{chat.composerHint}</span>
+					<Icon name="ph:paperclip" class="size-4.5" aria-hidden="true" />
+					<Icon name="ph:camera" class="size-4.5" aria-hidden="true" />
+				</div>
+				<span class="hero-whatsapp-microphone">
+					<Icon name="ph:microphone" class="size-4.5" aria-hidden="true" />
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="hero-appointment-card" data-hero-result aria-hidden="true">
+		<span>
+			<Icon name="ph:calendar-check" class="size-5" />
+		</span>
+		<div>
+			<small>{chat.resultLabel}</small>
+			<strong>{chat.resultTitle}</strong>
+			<p>{chat.resultDetail}</p>
+		</div>
+	</div>
+
+	<figcaption id="hero-whatsapp-caption" class="sr-only">{chat.label}</figcaption>
+</figure>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-hero-whatsapp]').forEach((phone) => {
+		const messages = Array.from(
+			phone.querySelectorAll<HTMLElement>('[data-hero-message]'),
+		);
+		const typing = phone.querySelector<HTMLElement>('[data-hero-typing]');
+		const chatArea = phone.querySelector<HTMLElement>('[data-hero-whatsapp-chat]');
+		const result = phone.parentElement?.querySelector<HTMLElement>('[data-hero-result]');
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		const scrollToLatest = () => {
+			if (!chatArea) return;
+			chatArea.scrollTo({
+				top: chatArea.scrollHeight,
+				behavior: reduceMotion ? 'auto' : 'smooth',
+			});
+		};
+
+		if (reduceMotion) {
+			messages.forEach((message) => message.classList.add('is-visible'));
+			result?.classList.add('is-visible');
+			scrollToLatest();
+			return;
+		}
+
+		let elapsed = 250;
+		messages.forEach((message, index) => {
+			const isIncoming = message.classList.contains('wa-bubble--incoming');
+			if (index > 0) elapsed += isIncoming ? 1500 : 1150;
+
+			if (isIncoming) {
+				window.setTimeout(() => {
+					typing?.classList.add('is-visible');
+					scrollToLatest();
+				}, elapsed - 820);
+			}
+
+			window.setTimeout(() => {
+				typing?.classList.remove('is-visible');
+				message.classList.add('is-visible');
+				scrollToLatest();
+			}, elapsed);
+		});
+
+		window.setTimeout(() => result?.classList.add('is-visible'), elapsed + 900);
+	});
+</script>

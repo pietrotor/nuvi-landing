@@ -1,0 +1,692 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import beautyStudioImage from '../assets/beauty-studio-team.png';
+import industryClinicImage from '../assets/nuvi-industry-clinic.png';
+import industryEstheticsImage from '../assets/nuvi-industry-esthetics.png';
+import marketDentistImage from '../assets/nuvi-market-dentist.png';
+import marketDoctorImage from '../assets/nuvi-market-doctor.png';
+import marketPhysioImage from '../assets/nuvi-market-physio.png';
+import marketSalonSpaImage from '../assets/nuvi-market-salon-spa.png';
+import ownerImage from '../assets/salon-owner-hero.png';
+import CtaButton from '../components/CtaButton.astro';
+import HeroWhatsApp from '../components/HeroWhatsApp.astro';
+import WhatsAppDemo from '../components/WhatsAppDemo.astro';
+import { site } from '../content/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const featureIcons = [
+	'ph:chats-circle',
+	'ph:calendar-check',
+	'ph:qr-code',
+	'ph:stack',
+	'ph:bell-ringing',
+	'ph:user-switch',
+] as const;
+
+const flowIcons = [
+	'ph:chat-teardrop-text',
+	'ph:calendar-dots',
+	'ph:qr-code',
+	'ph:seal-check',
+] as const;
+
+const safetyIcons = ['ph:robot', 'ph:first-aid', 'ph:calendar-x'] as const;
+const marketImages = [
+	industryEstheticsImage,
+	marketSalonSpaImage,
+	marketDoctorImage,
+	marketDentistImage,
+	marketPhysioImage,
+	industryClinicImage,
+] as const;
+
+const featureGroups = [
+	{
+		title: site.features.groupTitles.attention,
+		itemIndexes: [0, 1, 4],
+	},
+	{
+		title: site.features.groupTitles.control,
+		itemIndexes: [2, 3, 5],
+	},
+] as const;
+
+const sectionHeadingClass =
+	'm-0 text-[clamp(2rem,4vw,3.4rem)] font-semibold leading-[1.08] tracking-[-0.035em] text-balance';
+const sectionDescriptionClass = 'm-0 max-w-168 text-base text-ink-700 text-pretty';
+---
+
+<BaseLayout>
+	<section
+		class="hero-backdrop relative overflow-hidden pt-12 pb-20 md:pt-18 lg:flex lg:min-h-[calc(100dvh-4.5rem)] lg:flex-col lg:justify-center"
+	>
+		<div
+			class="container-page grid items-center gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(34rem,1.15fr)] lg:gap-14"
+		>
+			<div class="relative z-2">
+				<p
+					class="eyebrow m-0 inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.08em] text-brand-700 uppercase"
+				>
+					{site.hero.eyebrow}
+				</p>
+				<h1
+					class="mt-5.5 max-w-[18ch] text-[clamp(2.75rem,5vw,4.5rem)] leading-[1.03] font-semibold tracking-[-0.04em] text-balance"
+				>
+					{site.hero.title}
+				</h1>
+				<p
+					class="mt-6 max-w-xl text-[clamp(1.05rem,1.7vw,1.25rem)] leading-[1.55] text-pretty text-ink-700"
+				>
+					{site.hero.description}
+				</p>
+				<div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+					<CtaButton location="hero" />
+					<a
+						href="#demo"
+						data-demo-scroll
+						data-location="hero"
+						class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-ink-700 no-underline transition-colors duration-200 hover:text-brand-700"
+					>
+						{site.hero.secondaryCta}
+						<Icon name="ph:arrow-down" class="size-4" aria-hidden="true" />
+					</a>
+				</div>
+			</div>
+
+			<div class="min-w-0">
+				<HeroWhatsApp />
+			</div>
+		</div>
+
+		<div class="container-page mt-12 grid gap-6 sm:grid-cols-2 md:mt-16 lg:grid-cols-4">
+			{
+				site.hero.facts.map((fact) => (
+					<div class="grid gap-1.5 border-t border-line pt-4">
+						<strong class="text-sm">{fact.title}</strong>
+						<span class="max-w-sm text-[0.8125rem] leading-[1.55] font-medium text-ink-700">
+							{fact.description}
+						</span>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<section
+		class="overflow-hidden bg-canvas py-20 md:py-28"
+		aria-labelledby="industries-title"
+	>
+		<div class="container-page">
+			<header class="max-w-3xl" data-reveal>
+				<h2 id="industries-title" class:list={[sectionHeadingClass, 'max-w-[18ch]']}>
+					{site.industries.title}
+				</h2>
+				<p class:list={[sectionDescriptionClass, 'mt-5']}>
+					{site.industries.description}
+				</p>
+			</header>
+
+			<div
+				class="market-gallery-shell relative mt-10 md:mt-14"
+				data-market-gallery
+				data-reveal
+			>
+				<div class="market-gallery">
+					{
+						site.industries.markets.map((market, index) => {
+							const descriptionId = `market-description-${index}`;
+
+							return (
+								<button
+									class:list={['market-card', index === 0 && 'is-active']}
+									type="button"
+									aria-label={market.title}
+									aria-describedby={descriptionId}
+									aria-expanded={index === 0 ? 'true' : 'false'}
+									data-market-card={index}
+								>
+									<Image
+										src={marketImages[index]}
+										alt={market.imageAlt}
+										widths={[320, 480, 640]}
+										sizes="(min-width: 1024px) 28vw, (min-width: 640px) 33vw, 50vw"
+										format="avif"
+										class="market-card-image"
+									/>
+									<span class="market-card-content">
+										<strong class="market-card-short-title">{market.shortTitle}</strong>
+										<span class="market-card-detail">
+											<strong>{market.title}</strong>
+											<span id={descriptionId} class="market-card-description">
+												{market.description}
+											</span>
+										</span>
+									</span>
+								</button>
+							);
+						})
+					}
+				</div>
+			</div>
+
+			<p
+				class="mx-auto mt-7 max-w-2xl text-center text-sm leading-relaxed font-medium text-brand-800"
+			>
+				{site.industries.closing}
+			</p>
+		</div>
+	</section>
+
+	<section
+		class="statement bg-brand-700 py-20 text-white md:py-28"
+		aria-labelledby="problem-title"
+	>
+		<div class="container-page grid gap-14 lg:grid-cols-[0.85fr_1fr] lg:gap-28">
+			<div data-reveal>
+				<p
+					class="eyebrow m-0 inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.08em] uppercase"
+				>
+					{site.problem.eyebrow}
+				</p>
+				<h2 id="problem-title" class:list={[sectionHeadingClass, 'mt-5 max-w-[12ch]']}>
+					{site.problem.title}
+				</h2>
+				<p class="mt-5 max-w-168 text-base text-pretty text-white/90">
+					{site.problem.description}
+				</p>
+			</div>
+
+			<div class="grid content-start">
+				{
+					site.problem.items.map((item, index) => (
+						<p
+							class="m-0 border-b border-white/23 py-4 text-[0.9375rem]"
+							data-reveal
+							style={`--reveal-index: ${index}`}
+						>
+							{item}
+						</p>
+					))
+				}
+				<strong class="mt-8 max-w-md text-[1.35rem] leading-[1.3]">
+					{site.problem.closing}
+				</strong>
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="demo"
+		class="scroll-mt-24 bg-brand-50 py-20 md:py-28"
+		aria-labelledby="demo-title"
+	>
+		<div class="container-page">
+			<div class="grid items-end gap-7 lg:grid-cols-[minmax(0,1fr)_auto]" data-reveal>
+				<div>
+					<h2 id="demo-title" class:list={[sectionHeadingClass, 'max-w-[13ch]']}>
+						{site.bookingDemo.title}
+					</h2>
+					<p class:list={[sectionDescriptionClass, 'mt-5']}>
+						{site.bookingDemo.description}
+					</p>
+				</div>
+				<div class="flex flex-col items-start gap-2 lg:items-end">
+					<span class="text-xs font-medium text-ink-500">
+						{site.bookingDemo.illustrativeLabel}
+					</span>
+					<span
+						class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-brand-700 shadow-surface"
+					>
+						<Icon name="ph:play-circle" class="size-4" aria-hidden="true" />
+						{site.bookingDemo.helper}
+					</span>
+				</div>
+			</div>
+
+			<div class="mt-12 md:mt-16" data-reveal>
+				<WhatsAppDemo />
+			</div>
+
+			<div
+				class="mt-12 grid gap-6 rounded-2xl bg-white p-6 shadow-surface md:mt-16 md:grid-cols-[minmax(0,1fr)_auto] md:items-center md:gap-10 md:p-8"
+				data-reveal
+			>
+				<div>
+					<strong class="block text-lg leading-tight tracking-[-0.02em]">
+						{site.midCta.title}
+					</strong>
+					<p class="mt-2 max-w-md text-sm text-ink-700">{site.midCta.description}</p>
+				</div>
+				<CtaButton location="post_demo" class="md:justify-self-end" />
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="como-atiende"
+		class="scroll-mt-24 bg-white py-20 md:py-28"
+		aria-labelledby="mechanism-title"
+	>
+		<div class="container-page">
+			<div class="max-w-3xl" data-reveal>
+				<h2 id="mechanism-title" class:list={[sectionHeadingClass, 'max-w-[17ch]']}>
+					{site.flow.title}
+				</h2>
+				<p class:list={[sectionDescriptionClass, 'mt-5']}>{site.flow.description}</p>
+			</div>
+
+			<div class="flow-board mt-12 md:mt-16" data-reveal>
+				<section class="flow-automated" aria-labelledby="flow-automated-title">
+					<header>
+						<span aria-hidden="true">
+							<Icon name="ph:chats-circle" class="size-5" />
+						</span>
+						<div>
+							<small>{site.flow.automatedLabel}</small>
+							<h3 id="flow-automated-title">{site.flow.automatedTitle}</h3>
+						</div>
+					</header>
+
+					<ol>
+						{
+							site.flow.steps.map((step, index) => (
+								<li>
+									<div class="flow-step-heading">
+										<span aria-hidden="true">
+											<Icon name={flowIcons[index]} class="size-5" />
+										</span>
+										<small>{step.label}</small>
+									</div>
+									<h4>{step.title}</h4>
+									<p>{step.description}</p>
+								</li>
+							))
+						}
+					</ol>
+				</section>
+
+				<aside class="flow-owner">
+					<div class="flow-owner-heading">
+						<small>{site.flow.ownerLabel}</small>
+						<span aria-hidden="true">
+							<Icon name={flowIcons[3]} class="size-5" />
+						</span>
+					</div>
+					<h3>{site.flow.ownerAction.title}</h3>
+					<p>{site.flow.ownerAction.description}</p>
+
+					<div class="flow-result">
+						<Icon name="ph:check-circle-fill" class="size-5" aria-hidden="true" />
+						<div>
+							<small>{site.flow.resultLabel}</small>
+							<strong>{site.flow.resultTitle}</strong>
+							<span>{site.flow.resultDetail}</span>
+						</div>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="que-resuelve"
+		class="scroll-mt-24 py-20 md:py-28"
+		aria-labelledby="capabilities-title"
+	>
+		<div class="container-page">
+			<div class="max-w-184" data-reveal>
+				<h2 id="capabilities-title" class={sectionHeadingClass}>{site.features.title}</h2>
+				<p class:list={[sectionDescriptionClass, 'mt-5']}>{site.features.description}</p>
+			</div>
+
+			<div class="capability-board mt-12 md:mt-16">
+				{
+					featureGroups.map((group, groupIndex) => (
+						<section
+							class:list={[
+								'capability-lane',
+								groupIndex === 0
+									? 'capability-lane--attention'
+									: 'capability-lane--control',
+							]}
+							data-reveal
+							style={`--reveal-index: ${groupIndex}`}
+							aria-labelledby={`feature-group-${groupIndex}`}
+						>
+							<header>
+								<span aria-hidden="true">
+									<Icon
+										name={groupIndex === 0 ? 'ph:chats-circle' : 'ph:sliders-horizontal'}
+										class="size-5"
+									/>
+								</span>
+								<h3 id={`feature-group-${groupIndex}`}>{group.title}</h3>
+							</header>
+
+							<div class="capability-items">
+								{group.itemIndexes.map((itemIndex) => {
+									const item = site.features.items[itemIndex];
+									return (
+										<article>
+											<span aria-hidden="true">
+												<Icon name={featureIcons[itemIndex]} class="size-5.5" />
+											</span>
+											<h4>{item.title}</h4>
+											<p>{item.description}</p>
+										</article>
+									);
+								})}
+							</div>
+						</section>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="tu-panel"
+		class="scroll-mt-24 bg-white py-20 md:py-28"
+		aria-labelledby="control-title"
+	>
+		<div
+			class="container-page grid items-center gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-24"
+		>
+			<div
+				class="relative min-h-100 overflow-hidden rounded-[1.25rem] shadow-lifted"
+				data-reveal
+			>
+				<Image
+					src={beautyStudioImage}
+					alt={site.owner.imageAlt}
+					widths={[640, 960, 1280]}
+					sizes="(min-width: 1024px) 52vw, calc(100vw - 2.5rem)"
+					format="avif"
+					quality={80}
+					loading="lazy"
+					class="h-full w-full object-cover"
+				/>
+				<div
+					class="absolute right-5 bottom-5 left-5 flex max-w-xs items-center gap-3 rounded-2xl bg-white/94 p-3.5 shadow-lifted backdrop-blur-md"
+					aria-hidden="true"
+				>
+					<span
+						class="grid size-9 place-items-center rounded-xl bg-brand-100 text-brand-700"
+					>
+						<Icon name="ph:check-circle" class="size-4" />
+					</span>
+					<div>
+						<strong class="block text-xs leading-[1.3]">
+							{site.owner.overlay.title}
+						</strong>
+						<small class="block text-[0.6875rem] leading-[1.35] font-medium text-ink-700">
+							{site.owner.overlay.detail}
+						</small>
+					</div>
+				</div>
+			</div>
+
+			<div data-reveal>
+				<h2 id="control-title" class={sectionHeadingClass}>{site.owner.title}</h2>
+				<p class:list={[sectionDescriptionClass, 'mt-5']}>{site.owner.description}</p>
+				<ul class="mt-8 grid list-none gap-3 p-0">
+					{
+						site.owner.points.map((point) => (
+							<li class="flex items-start gap-3 text-sm text-ink-700">
+								<Icon
+									name="ph:check"
+									class="mt-1 size-4 shrink-0 text-brand-600"
+									aria-hidden="true"
+								/>
+								{point}
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section class="bg-brand-50 py-20 md:py-28" aria-labelledby="onboarding-title">
+		<div class="container-page">
+			<div class="max-w-180" data-reveal>
+				<h2 id="onboarding-title" class={sectionHeadingClass}>{site.steps.title}</h2>
+				<p class:list={[sectionDescriptionClass, 'mt-5']}>{site.steps.description}</p>
+			</div>
+
+			<ol
+				class="mt-14 grid list-none gap-4 p-0 md:grid-cols-2 md:gap-x-12 md:gap-y-6 lg:grid-cols-4 lg:gap-8"
+			>
+				{
+					site.steps.items.map((item, index) => (
+						<li
+							class="grid grid-cols-[auto_1fr] gap-4 py-5"
+							data-reveal
+							style={`--reveal-index: ${index}`}
+						>
+							<span
+								class="grid size-10 place-items-center rounded-full bg-brand-700 text-xs font-bold text-white"
+								aria-hidden="true"
+							>
+								{index + 1}
+							</span>
+							<div>
+								<h3 class="m-0 text-[0.9375rem] font-semibold">{item.title}</h3>
+								<p class="mt-1.5 text-sm leading-relaxed text-ink-700">
+									{item.description}
+								</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<section class="py-20 md:py-28" aria-labelledby="safety-title">
+		<div
+			class="mx-5 grid gap-12 rounded-3xl bg-ink-950 px-5 py-12 text-white md:container-page md:grid-cols-[0.8fr_1.2fr] md:items-center md:p-16"
+		>
+			<div data-reveal>
+				<h2 id="safety-title" class={sectionHeadingClass}>{site.safety.title}</h2>
+				<p class="mt-4 max-w-168 text-base text-pretty text-white/78">
+					{site.safety.description}
+				</p>
+			</div>
+
+			<div class="grid gap-4">
+				{
+					site.safety.items.map((item, index) => (
+						<article
+							class="grid grid-cols-[auto_1fr] gap-4 rounded-2xl bg-white/7 p-4.5"
+							data-reveal
+							style={`--reveal-index: ${index}`}
+						>
+							<Icon
+								name={safetyIcons[index]}
+								class="mt-0.5 size-5 text-brand-400"
+								aria-hidden="true"
+							/>
+							<div>
+								<h3 class="m-0 text-sm font-semibold">{item.title}</h3>
+								<p class="mt-1.5 text-[0.8125rem] leading-[1.6] text-white/72">
+									{item.description}
+								</p>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<section
+		id="preguntas"
+		class="scroll-mt-24 bg-white py-20 md:py-28"
+		aria-labelledby="faq-title"
+	>
+		<div class="container-narrow">
+			<h2 id="faq-title" class:list={[sectionHeadingClass, 'max-w-[16ch]']}>
+				{site.faq.title}
+			</h2>
+			<div class="mt-12 border-t border-line">
+				{
+					site.faq.items.map((item, index) => {
+						const answerId = `faq-answer-${index}`;
+						return (
+							<details
+								class="faq-item group border-b border-line"
+								data-faq
+								open={index === 0}
+							>
+								<summary
+									class="flex min-h-18 items-center justify-between gap-8 py-5"
+									aria-controls={answerId}
+								>
+									<h3 class="m-0 text-base font-semibold tracking-[-0.01em]">
+										{item.question}
+									</h3>
+									<span
+										class="faq-toggle-icon grid size-9 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700"
+										aria-hidden="true"
+									>
+										<Icon name="ph:plus" class="size-4" />
+									</span>
+								</summary>
+								<div id={answerId} class="faq-answer" data-faq-answer>
+									<p class="m-0 max-w-168 pr-14 pb-6 text-sm leading-[1.75] text-ink-700">
+										{item.answer}
+									</p>
+								</div>
+							</details>
+						);
+					})
+				}
+			</div>
+		</div>
+	</section>
+
+	<section
+		class="overflow-hidden bg-brand-700 py-20 text-white md:py-28"
+		aria-labelledby="closing-title"
+	>
+		<div
+			class="container-page grid items-center gap-12 lg:grid-cols-[1fr_0.75fr] lg:gap-24"
+		>
+			<div data-reveal>
+				<h2 id="closing-title" class={sectionHeadingClass}>{site.finalCta.title}</h2>
+				<p class="mt-5 max-w-168 text-base text-pretty text-white/90">
+					{site.finalCta.description}
+				</p>
+				<div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-4">
+					<CtaButton location="final_cta" tone="light" />
+					<span class="text-xs font-medium text-white/90"
+						>{site.finalCta.reassurance}</span
+					>
+				</div>
+			</div>
+
+			<div
+				class="h-108 rotate-2 overflow-hidden rounded-[1.25rem] shadow-[0_28px_70px_-32px_rgb(15_118_110/0.8)]"
+				data-reveal
+			>
+				<Image
+					src={ownerImage}
+					alt={site.finalCta.imageAlt}
+					widths={[480, 720, 960]}
+					sizes="(min-width: 1024px) 28rem, calc(100vw - 2.5rem)"
+					format="avif"
+					quality={80}
+					loading="lazy"
+					class="h-full w-full object-cover"
+				/>
+			</div>
+		</div>
+	</section>
+</BaseLayout>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-market-gallery]').forEach((gallery) => {
+		const cards = Array.from(
+			gallery.querySelectorAll<HTMLButtonElement>('[data-market-card]'),
+		);
+		const desktopQuery = window.matchMedia(
+			'(min-width: 64rem) and (hover: hover) and (pointer: fine)',
+		);
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		let activeIndex = 0;
+		let timer: number | undefined;
+		let isVisible = false;
+		let interactionPaused = false;
+
+		const stop = () => {
+			if (timer === undefined) return;
+			window.clearInterval(timer);
+			timer = undefined;
+		};
+
+		const setActive = (index: number) => {
+			activeIndex = index;
+			cards.forEach((card, cardIndex) => {
+				const active = cardIndex === index;
+				card.classList.toggle('is-active', active);
+				card.setAttribute('aria-expanded', String(active));
+			});
+		};
+
+		const start = () => {
+			stop();
+			if (
+				reduceMotion ||
+				!desktopQuery.matches ||
+				!isVisible ||
+				document.hidden ||
+				interactionPaused
+			)
+				return;
+
+			timer = window.setInterval(() => {
+				setActive((activeIndex + 1) % cards.length);
+			}, 3800);
+		};
+
+		cards.forEach((card, index) => {
+			card.addEventListener('pointerenter', () => setActive(index));
+			card.addEventListener('focus', () => setActive(index));
+			card.addEventListener('click', () => setActive(index));
+		});
+
+		gallery.addEventListener('pointerenter', () => {
+			interactionPaused = true;
+			stop();
+		});
+		gallery.addEventListener('pointerleave', () => {
+			interactionPaused = false;
+			start();
+		});
+		gallery.addEventListener('focusin', () => {
+			interactionPaused = true;
+			stop();
+		});
+		gallery.addEventListener('focusout', () => {
+			window.setTimeout(() => {
+				interactionPaused = gallery.contains(document.activeElement);
+				start();
+			});
+		});
+
+		desktopQuery.addEventListener('change', start);
+		document.addEventListener('visibilitychange', start);
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				isVisible = entry?.isIntersecting ?? false;
+				start();
+			},
+			{ threshold: 0.35 },
+		);
+		observer.observe(gallery);
+	});
+</script>

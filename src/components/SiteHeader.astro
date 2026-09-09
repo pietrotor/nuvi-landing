@@ -1,0 +1,97 @@
+---
+import { Icon } from 'astro-icon/components';
+import BrandLogo from './BrandLogo.astro';
+import { site } from '../content/site';
+import { buildWhatsappUrl } from '../lib/whatsapp';
+
+const whatsappUrl = buildWhatsappUrl(site.cta.whatsappMessage);
+---
+
+<header class="sticky top-0 z-50 border-b border-line/80 bg-canvas/88 backdrop-blur-xl">
+	<div class="container-page flex h-18 items-center gap-6">
+		<a href="/" aria-label={`${site.name}, ${site.accessibility.homeLink}`}>
+			<BrandLogo />
+		</a>
+
+		<nav
+			class="ml-auto hidden items-center gap-7 text-sm font-medium text-ink-700 lg:flex"
+			aria-label={site.accessibility.mainNav}
+		>
+			{
+				site.navigation.map((item) => (
+					<a
+						href={item.href}
+						class="underline-offset-8 transition-colors duration-200 hover:text-brand-700 hover:underline"
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<a
+			href={whatsappUrl}
+			target="_blank"
+			rel="noreferrer"
+			data-conversion-cta
+			data-location="header"
+			class="ml-auto hidden min-h-11 items-center rounded-full bg-brand-700 px-5 text-sm font-semibold whitespace-nowrap text-white shadow-brand transition-[background-color,transform] duration-200 hover:bg-brand-800 active:scale-[0.98] lg:ml-0 lg:inline-flex"
+		>
+			{site.cta.label}
+		</a>
+
+		<details class="group relative ml-auto lg:hidden" data-mobile-menu>
+			<summary
+				class="grid size-11 place-items-center rounded-xl border border-line bg-white text-ink-950 shadow-surface"
+				aria-label={site.accessibility.openMenu}
+			>
+				<Icon name="ph:list" class="size-5 group-open:hidden" aria-hidden="true" />
+				<Icon name="ph:x" class="hidden size-5 group-open:block" aria-hidden="true" />
+			</summary>
+			<div
+				class="absolute top-[calc(100%+0.75rem)] right-0 w-[min(21rem,calc(100vw-2.5rem))] rounded-2xl bg-white p-3 shadow-lifted"
+			>
+				<nav class="grid" aria-label={site.accessibility.mobileNav}>
+					{
+						site.navigation.map((item) => (
+							<a
+								href={item.href}
+								class="rounded-xl px-4 py-3 text-sm font-medium text-ink-700 transition-colors hover:bg-brand-50 hover:text-brand-700"
+							>
+								{item.label}
+							</a>
+						))
+					}
+				</nav>
+				<a
+					href={whatsappUrl}
+					target="_blank"
+					rel="noreferrer"
+					data-conversion-cta
+					data-location="mobile_menu"
+					class="mt-2 flex min-h-12 items-center justify-center rounded-full bg-brand-700 px-5 text-sm font-semibold text-white"
+				>
+					{site.cta.label}
+				</a>
+			</div>
+		</details>
+	</div>
+</header>
+
+<script>
+	const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
+
+	menu?.addEventListener('click', (event) => {
+		if ((event.target as HTMLElement).closest('a')) menu.open = false;
+	});
+
+	document.addEventListener('pointerdown', (event) => {
+		if (menu?.open && !menu.contains(event.target as Node)) menu.open = false;
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key !== 'Escape' || !menu?.open) return;
+		menu.open = false;
+		menu.querySelector<HTMLElement>('summary')?.focus();
+	});
+</script>

@@ -1,0 +1,351 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import demoQrImage from '../assets/nuvi-demo-qr.png';
+import demoReceiptImage from '../assets/nuvi-demo-receipt.png';
+import { site } from '../content/site';
+
+const demo = site.whatsappDemo;
+---
+
+<figure
+	class="whatsapp-demo m-0"
+	data-whatsapp-demo
+	aria-labelledby="whatsapp-demo-caption"
+>
+	<div class="whatsapp-demo-scene">
+		<div class="whatsapp-demo-phone wa-phone-shell relative p-1.5">
+			<span class="wa-device-button wa-device-button--volume" aria-hidden="true"></span>
+			<span class="wa-device-button wa-device-button--power" aria-hidden="true"></span>
+			<div class="wa-phone relative flex h-168 flex-col overflow-hidden">
+				<span class="wa-device-camera" aria-hidden="true"></span>
+				<div
+					class="wa-statusbar flex h-7 items-center justify-between px-5 text-[0.625rem]"
+				>
+					<strong>{demo.statusBarTime}</strong>
+					<span class="flex items-center gap-1" aria-hidden="true">
+						<Icon name="ph:cell-signal-high" class="size-3" />
+						<Icon name="ph:wifi-high" class="size-3" />
+						<Icon name="ph:battery-high" class="size-3.5" />
+					</span>
+				</div>
+
+				<header class="wa-chat-header flex items-center gap-2 px-2.5 py-2 text-white">
+					<Icon name="ph:caret-left" class="size-5 shrink-0" aria-hidden="true" />
+					<span
+						class="grid size-9 shrink-0 place-items-center rounded-full bg-white/18 text-[0.6875rem] font-bold"
+					>
+						{demo.avatar}
+					</span>
+					<span class="min-w-0">
+						<strong class="block truncate text-[0.8125rem] leading-tight">
+							{demo.contact}
+						</strong>
+						<small class="block text-[0.625rem] leading-tight text-white/78">
+							{demo.onlineStatus}
+						</small>
+					</span>
+					<span class="ml-auto flex items-center gap-3" aria-hidden="true">
+						<Icon name="ph:video-camera" class="size-4" />
+						<Icon name="ph:phone" class="size-4" />
+						<Icon name="ph:dots-three-vertical" class="size-4" />
+					</span>
+				</header>
+
+				<div
+					class="whatsapp-demo-chat wa-wallpaper flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-3 py-3"
+					data-whatsapp-chat
+				>
+					<span
+						class="wa-date mx-auto rounded-md px-2.5 py-1 text-[0.5625rem] font-medium uppercase"
+					>
+						{demo.todayLabel}
+					</span>
+
+					{
+						demo.messages.map((message, index) => (
+							<div
+								class:list={[
+									'whatsapp-demo-message wa-bubble max-w-[91%]',
+									message.direction === 'outgoing'
+										? 'wa-bubble--outgoing self-end'
+										: 'wa-bubble--incoming self-start',
+								]}
+								data-whatsapp-message={index}
+							>
+								{message.direction === 'incoming' && (
+									<strong class="wa-assistant-label">{demo.assistantIdentity}</strong>
+								)}
+								<p>{message.text}</p>
+								{message.kind === 'summary' && (
+									<div class="whatsapp-demo-summary">
+										{demo.bookingSummary.map((item) => (
+											<span>
+												<strong>{item.label}</strong>
+												{item.value}
+											</span>
+										))}
+									</div>
+								)}
+								{message.kind === 'qr' && (
+									<figure class="whatsapp-demo-bank-image">
+										<Image
+											src={demoQrImage}
+											alt={demo.qrImageAlt}
+											widths={[220, 320]}
+											sizes="13rem"
+											format="avif"
+											quality={78}
+											loading="lazy"
+										/>
+										<figcaption>
+											<strong>{demo.depositAmount}</strong>
+											<small>{demo.qrCaption}</small>
+										</figcaption>
+									</figure>
+								)}
+								{message.kind === 'receipt' && (
+									<figure class="whatsapp-demo-bank-image whatsapp-demo-bank-image--receipt">
+										<Image
+											src={demoReceiptImage}
+											alt={demo.receiptImageAlt}
+											widths={[220, 320]}
+											sizes="13rem"
+											format="avif"
+											quality={76}
+											loading="lazy"
+										/>
+										<figcaption>
+											<strong>{demo.receiptName}</strong>
+											<small>{demo.receiptCaption}</small>
+										</figcaption>
+									</figure>
+								)}
+								<span class="wa-message-meta">
+									{message.time}
+									{message.direction === 'outgoing' && (
+										<Icon name="ph:checks" class="wa-checks size-3" aria-hidden="true" />
+									)}
+								</span>
+							</div>
+						))
+					}
+
+					<div
+						class="whatsapp-demo-typing wa-bubble wa-bubble--incoming wa-typing-bubble max-w-[78%] self-start"
+						data-whatsapp-typing
+						aria-hidden="true"
+					>
+						<span class="wa-typing-dot"></span>
+						<span class="wa-typing-dot"></span>
+						<span class="wa-typing-dot"></span>
+						<small>{demo.typingLabel}</small>
+					</div>
+				</div>
+
+				<div class="wa-composer flex items-end gap-2 px-2 py-2.5">
+					<div class="flex min-h-10 flex-1 items-center gap-2 rounded-full bg-white px-3">
+						<Icon name="ph:smiley" class="size-5 text-whatsapp-meta" aria-hidden="true" />
+						<span class="flex-1 text-[0.6875rem] text-whatsapp-meta/75">
+							{demo.composerHint}
+						</span>
+						<Icon
+							name="ph:paperclip"
+							class="size-4 text-whatsapp-meta"
+							aria-hidden="true"
+						/>
+						<Icon name="ph:camera" class="size-4 text-whatsapp-meta" aria-hidden="true" />
+					</div>
+					<span
+						class="grid size-10 shrink-0 place-items-center rounded-full bg-whatsapp-accent text-white"
+					>
+						<Icon name="ph:microphone" class="size-4.5" aria-hidden="true" />
+					</span>
+				</div>
+				<div class="wa-navigation-bar" aria-hidden="true">
+					<span></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="whatsapp-demo-mobile-status" aria-live="polite">
+			<div class="whatsapp-demo-mobile-status-header">
+				<span>
+					<i aria-hidden="true"></i>
+					{demo.mobileStatusLabel}
+				</span>
+				<span class="whatsapp-demo-mobile-dots" aria-hidden="true">
+					{demo.steps.map((_, index) => <i data-whatsapp-mobile-dot={index} />)}
+				</span>
+			</div>
+			<div class="whatsapp-demo-mobile-status-body">
+				{
+					demo.steps.map((step, index) => (
+						<div data-whatsapp-mobile-step={index}>
+							<time>{step.time}</time>
+							<span>
+								<strong>{step.title}</strong>
+								<small>{step.description}</small>
+							</span>
+						</div>
+					))
+				}
+				<div class="whatsapp-demo-mobile-result" data-whatsapp-mobile-result>
+					<time>10:16</time>
+					<span>
+						<strong>{demo.resultLabel}</strong>
+						<small>{demo.resultTitle}</small>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<aside class="whatsapp-demo-progress" aria-label={demo.progressLabel}>
+			<div class="whatsapp-demo-progress-header">
+				<span class="whatsapp-demo-live" aria-hidden="true">
+					<i></i>
+					{demo.automaticLabel}
+				</span>
+				<small>{demo.progressCase}</small>
+				<strong>{demo.progressTitle}</strong>
+				<p>{demo.progressDescription}</p>
+			</div>
+
+			<ol class="whatsapp-demo-steps">
+				{
+					demo.steps.map((step, index) => (
+						<li data-whatsapp-step={index}>
+							<time>{step.time}</time>
+							<span class="whatsapp-demo-step-marker" aria-hidden="true" />
+							<span>
+								<strong>{step.title}</strong>
+								<small>{step.description}</small>
+							</span>
+						</li>
+					))
+				}
+			</ol>
+
+			<div class="whatsapp-demo-result" data-whatsapp-result>
+				<span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-100">
+					{demo.avatar}
+				</span>
+				<div>
+					<small>{demo.humanAction.label}</small>
+					<strong>{demo.humanAction.title}</strong>
+					<p>{demo.humanAction.description}</p>
+				</div>
+			</div>
+		</aside>
+	</div>
+
+	<figcaption id="whatsapp-demo-caption" class="sr-only">{demo.label}</figcaption>
+</figure>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-whatsapp-demo]').forEach((demo) => {
+		const messages = Array.from(
+			demo.querySelectorAll<HTMLElement>('[data-whatsapp-message]'),
+		);
+		const steps = Array.from(demo.querySelectorAll<HTMLElement>('[data-whatsapp-step]'));
+		const mobileSteps = Array.from(
+			demo.querySelectorAll<HTMLElement>('[data-whatsapp-mobile-step]'),
+		);
+		const mobileDots = Array.from(
+			demo.querySelectorAll<HTMLElement>('[data-whatsapp-mobile-dot]'),
+		);
+		const typing = demo.querySelector<HTMLElement>('[data-whatsapp-typing]');
+		const chat = demo.querySelector<HTMLElement>('[data-whatsapp-chat]');
+		const result = demo.querySelector<HTMLElement>('[data-whatsapp-result]');
+		const mobileResult = demo.querySelector<HTMLElement>('[data-whatsapp-mobile-result]');
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const timers = new Set<number>();
+		let started = false;
+
+		const scrollToLatest = () => {
+			if (!chat) return;
+			chat.scrollTo({
+				top: chat.scrollHeight,
+				behavior: reduceMotion ? 'auto' : 'smooth',
+			});
+		};
+
+		const schedule = (callback: () => void, delay: number) => {
+			const timer = window.setTimeout(() => {
+				timers.delete(timer);
+				callback();
+			}, delay);
+			timers.add(timer);
+		};
+
+		const activateStep = (index: number) => {
+			steps.forEach((step, stepIndex) => {
+				step.dataset.state =
+					stepIndex < index ? 'complete' : stepIndex === index ? 'active' : 'waiting';
+			});
+			mobileSteps.forEach((step, stepIndex) => {
+				step.dataset.state = stepIndex === index ? 'active' : 'waiting';
+			});
+			mobileDots.forEach((dot, dotIndex) => {
+				dot.dataset.state =
+					dotIndex < index ? 'complete' : dotIndex === index ? 'active' : 'waiting';
+			});
+		};
+
+		const revealMessage = (index: number) => {
+			const message = messages[index];
+			if (!message) return;
+			typing?.classList.remove('is-visible');
+			message.classList.add('is-visible');
+			scrollToLatest();
+
+			const stepByMessage = [0, 0, 0, 1, 1, 2, 2, 3, 3];
+			activateStep(stepByMessage[index] ?? 0);
+
+			if (index === messages.length - 1) {
+				steps.forEach((step) => (step.dataset.state = 'complete'));
+				mobileSteps.forEach((step) => (step.dataset.state = 'complete'));
+				mobileDots.forEach((dot) => (dot.dataset.state = 'complete'));
+				result?.classList.add('is-visible');
+				mobileResult?.classList.add('is-visible');
+				return;
+			}
+
+			if (messages[index + 1]?.classList.contains('wa-bubble--incoming')) {
+				schedule(() => {
+					typing?.classList.add('is-visible');
+					scrollToLatest();
+				}, 520);
+			}
+		};
+
+		const play = () => {
+			if (reduceMotion) {
+				messages.forEach((message) => message.classList.add('is-visible'));
+				steps.forEach((step) => (step.dataset.state = 'complete'));
+				mobileSteps.forEach((step) => (step.dataset.state = 'complete'));
+				mobileDots.forEach((dot) => (dot.dataset.state = 'complete'));
+				result?.classList.add('is-visible');
+				mobileResult?.classList.add('is-visible');
+				scrollToLatest();
+				return;
+			}
+
+			messages.forEach((_, index) => {
+				schedule(() => revealMessage(index), index === 0 ? 0 : index * 1450);
+			});
+		};
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (!entries[0]?.isIntersecting || started) return;
+				started = true;
+				play();
+				observer.disconnect();
+			},
+			{ threshold: 0.2 },
+		);
+
+		observer.observe(demo);
+	});
+</script>

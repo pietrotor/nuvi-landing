@@ -1,0 +1,36 @@
+---
+import BrandLogo from './BrandLogo.astro';
+import { site } from '../content/site';
+---
+
+<footer class="border-t border-line bg-white">
+	<div
+		class="container-page grid gap-10 py-14 md:grid-cols-[minmax(0,1fr)_auto] md:items-start"
+	>
+		<div class="max-w-sm">
+			<a href="/" aria-label={`${site.name}, ${site.accessibility.homeLink}`}>
+				<BrandLogo />
+			</a>
+			<p class="mt-4 text-sm leading-relaxed text-ink-700">{site.footer.description}</p>
+		</div>
+
+		<nav
+			class="grid gap-x-12 gap-y-3 text-sm font-medium text-ink-700 sm:grid-cols-2"
+			aria-label={site.accessibility.footerNav}
+		>
+			{
+				site.navigation.map((item) => (
+					<a href={item.href} class="transition-colors hover:text-brand-700">
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+	</div>
+
+	<div class="border-t border-line">
+		<div class="container-page py-6 text-xs font-medium text-ink-500">
+			<p>{site.footer.copyright}</p>
+		</div>
+	</div>
+</footer>

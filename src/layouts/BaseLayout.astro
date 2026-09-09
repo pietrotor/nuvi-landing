@@ -1,0 +1,104 @@
+---
+import '@fontsource/poppins/400.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/700.css';
+import 'lenis/dist/lenis.css';
+import '../styles/global.css';
+import heroImage from '../assets/salon-owner-hero.png';
+import LeadDialog from '../components/LeadDialog.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { site } from '../content/site';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = site.seo.title, description = site.seo.description } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? site.url);
+const socialImageUrl = new URL(heroImage.src, Astro.site ?? site.url);
+const structuredData = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'Organization',
+			name: site.name,
+			url: site.url,
+		},
+		{
+			'@type': 'SoftwareApplication',
+			name: site.name,
+			applicationCategory: 'BusinessApplication',
+			operatingSystem: 'Web',
+			description,
+			inLanguage: 'es-BO',
+		},
+		{
+			'@type': 'FAQPage',
+			mainEntity: site.faq.items.map((item) => ({
+				'@type': 'Question',
+				name: item.question,
+				acceptedAnswer: { '@type': 'Answer', text: item.answer },
+			})),
+		},
+	],
+};
+---
+
+<!doctype html>
+<html lang="es-BO">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#f7faf9" />
+		<meta name="description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="es_BO" />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={socialImageUrl} />
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="icon" type="image/png" href="/nuvi-logo-icon.png" />
+		<title>{title}</title>
+		<script
+			is:inline
+			type="application/ld+json"
+			set:html={JSON.stringify(structuredData)}
+		/>
+	</head>
+	<body class="bg-canvas text-ink-950 antialiased">
+		<!--
+		THESIS: a WhatsApp conversation visibly becomes a real appointment; refuse the generic static SaaS dashboard hero.
+		OWN-WORLD: Nuvi teal fields, crisp white product surfaces, Poppins, the exact sidebar mark, and one fluid scheduling choreography.
+		STORY: the owner sees the message arrive, availability offered, a choice made, and the booked slot appear; then requests a demo.
+		FIRST VIEWPORT: concise two-line promise and CTA on the left; oversized live phone-to-calendar story on the right.
+		FORM: user-pinned teal flow, seed key user-pinned-teal-flow.
+		FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+		-->
+		<a
+			class="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:z-60 focus-visible:rounded-full focus-visible:bg-brand-700 focus-visible:px-4 focus-visible:py-2.5 focus-visible:text-sm focus-visible:font-semibold focus-visible:text-white"
+			href="#contenido">{site.accessibility.skipToContent}</a
+		>
+		<SiteHeader />
+		<main id="contenido">
+			<slot />
+		</main>
+		<SiteFooter />
+		<LeadDialog />
+		<script>
+			import '../scripts/accordion';
+			import '../scripts/experiment';
+			import '../scripts/reveal';
+			import '../scripts/smooth-scroll';
+		</script>
+	</body>
+</html>

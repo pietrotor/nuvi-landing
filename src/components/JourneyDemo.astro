@@ -1,0 +1,829 @@
+---
+import { Icon } from 'astro-icon/components';
+import { site } from '../content/site';
+
+const demo = site.journeyDemo;
+const initialScenario = demo.scenarios[0];
+const initialStage = demo.stages[0];
+const stageIcons = [
+	'ph:calendar-check',
+	'ph:qr-code',
+	'ph:bell-ringing',
+	'ph:arrows-clockwise',
+];
+---
+
+<figure
+	class="journey-demo m-0"
+	data-journey-demo
+	data-scenarios={JSON.stringify(demo.scenarios)}
+	data-stages={JSON.stringify(demo.stages)}
+	data-phase="initial"
+	data-stage="booking"
+	data-automatic-label={demo.automaticLabel}
+	data-manual-label={demo.manualLabel}
+	data-checking-label={demo.sidePanel.checking}
+	data-saved-label={demo.sidePanel.saved}
+	data-deposit-pending-label={demo.sidePanel.depositPending}
+	data-receipt-label={demo.sidePanel.receiptReceived}
+	data-verify-action-label={demo.sidePanel.verifyAction}
+	data-verified-label={demo.sidePanel.depositVerified}
+	data-released-label={demo.sidePanel.released}
+	data-updated-label={demo.sidePanel.updated}
+	data-available-label={demo.sidePanel.available}
+	data-new-slot-label={demo.sidePanel.newSlot}
+	aria-labelledby="journey-demo-caption"
+>
+	<div class="journey-demo-toolbar">
+		<div class="journey-demo-filter">
+			<span>{demo.verticalLabel}</span>
+			<div class="journey-demo-segments" role="group" aria-label={demo.verticalLabel}>
+				{
+					demo.scenarios.map((scenario, index) => (
+						<button
+							type="button"
+							data-journey-scenario={scenario.id}
+							aria-pressed={index === 0}
+						>
+							{scenario.label}
+						</button>
+					))
+				}
+			</div>
+		</div>
+
+		<div class="journey-demo-mode" aria-live="polite">
+			<Icon name="ph:play-circle" class="size-4" aria-hidden="true" />
+			<span data-journey-mode>{demo.automaticLabel}</span>
+		</div>
+	</div>
+
+	<div class="journey-stage-nav" role="group" aria-label={demo.stageLabel}>
+		{
+			demo.stages.map((stage, index) => (
+				<button
+					type="button"
+					class="journey-stage-button"
+					data-journey-stage={stage.id}
+					aria-pressed={index === 0}
+				>
+					<span class="journey-stage-icon" aria-hidden="true">
+						<Icon name={stageIcons[index]} class="size-5" />
+					</span>
+					<span>
+						<strong>{stage.label}</strong>
+						<small>{stage.description}</small>
+					</span>
+				</button>
+			))
+		}
+	</div>
+
+	<div class="journey-demo-stage">
+		<div
+			class="wa-phone-shell journey-phone-shell relative mx-auto w-full max-w-[19rem] p-1.5"
+		>
+			<div class="wa-phone relative flex h-[37rem] flex-col overflow-hidden">
+				<div
+					class="wa-statusbar flex h-7 items-center justify-between px-5 text-[0.625rem]"
+				>
+					<strong>{demo.statusBarTime}</strong>
+					<span class="flex items-center gap-1" aria-hidden="true">
+						<Icon name="ph:cell-signal-high" class="size-3" />
+						<Icon name="ph:wifi-high" class="size-3" />
+						<Icon name="ph:battery-high" class="size-3.5" />
+					</span>
+				</div>
+
+				<header class="wa-chat-header flex items-center gap-2 px-2.5 py-2 text-white">
+					<Icon name="ph:caret-left" class="size-5 shrink-0" aria-hidden="true" />
+					<span
+						class="grid size-9 shrink-0 place-items-center rounded-full bg-white/18 text-[0.6875rem] font-bold"
+						data-journey-avatar
+					>
+						{initialScenario.avatar}
+					</span>
+					<span class="min-w-0">
+						<strong
+							class="block truncate text-[0.8125rem] leading-tight"
+							data-journey-contact
+						>
+							{initialScenario.contact}
+						</strong>
+						<small class="block text-[0.625rem] leading-tight text-white/78">
+							{demo.onlineStatus}
+						</small>
+					</span>
+					<span class="ml-auto flex items-center gap-3" aria-hidden="true">
+						<Icon name="ph:video-camera" class="size-4" />
+						<Icon name="ph:phone" class="size-4" />
+						<Icon name="ph:dots-three-vertical" class="size-4" />
+					</span>
+				</header>
+
+				<div
+					class="wa-wallpaper flex min-h-0 flex-1 flex-col gap-2 overflow-hidden px-3 py-3"
+				>
+					<span
+						class="wa-date mx-auto rounded-md px-2.5 py-1 text-[0.5625rem] font-medium uppercase"
+					>
+						{demo.todayLabel}
+					</span>
+
+					<div
+						class="wa-bubble wa-bubble--outgoing journey-primary-message max-w-[88%] self-end"
+						data-journey-primary
+					>
+						<p data-journey-primary-text>{initialScenario.booking.client}</p>
+						<span class="wa-message-meta">
+							{demo.messageTimes.client}
+							<Icon name="ph:checks" class="wa-checks size-3" />
+						</span>
+					</div>
+
+					<div
+						class="wa-bubble wa-bubble--incoming wa-typing-bubble journey-typing max-w-[78%] self-start"
+						data-journey-typing
+					>
+						<span class="wa-typing-dot"></span>
+						<span class="wa-typing-dot"></span>
+						<span class="wa-typing-dot"></span>
+						<small>{demo.typingLabel}</small>
+					</div>
+
+					<div
+						class="wa-bubble wa-bubble--incoming journey-assistant-message max-w-[91%] self-start"
+						data-journey-assistant
+					>
+						<strong class="wa-assistant-label">{demo.assistantIdentity}</strong>
+						<p data-journey-assistant-text>{initialScenario.booking.assistant}</p>
+						<div class="journey-wa-qr mt-2" data-journey-wa-qr hidden>
+							<Icon name="ph:qr-code" class="size-23" aria-hidden="true" />
+							<span>
+								<strong data-journey-deposit>{initialScenario.deposit}</strong>
+								<small>{demo.sidePanel.moneyNote}</small>
+							</span>
+						</div>
+						<div
+							class="journey-chat-actions mt-2 flex flex-wrap gap-2"
+							data-journey-actions
+						>
+							<button type="button" class="wa-slot-button" data-journey-action="primary">
+								{initialScenario.bookingSlots[0]}
+							</button>
+							<button
+								type="button"
+								class="wa-slot-button"
+								data-journey-action="secondary"
+							>
+								{initialScenario.bookingSlots[1]}
+							</button>
+						</div>
+						<span class="wa-message-meta">{demo.messageTimes.assistant}</span>
+					</div>
+
+					<div
+						class="wa-bubble wa-bubble--outgoing journey-response-message max-w-[80%] self-end"
+						data-journey-response
+					>
+						<p data-journey-response-text>
+							{
+								initialScenario.booking.choiceTemplate.replace(
+									'{time}',
+									initialScenario.oldTime,
+								)
+							}
+						</p>
+						<span class="wa-message-meta">
+							{demo.messageTimes.response}
+							<Icon name="ph:checks" class="wa-checks size-3" />
+						</span>
+					</div>
+
+					<div
+						class="wa-bubble wa-bubble--incoming journey-final-message max-w-[91%] self-start"
+						data-journey-final
+					>
+						<strong class="wa-assistant-label">{demo.assistantIdentity}</strong>
+						<p data-journey-final-text>
+							{
+								initialScenario.booking.finalTemplate.replace(
+									'{time}',
+									initialScenario.oldTime,
+								)
+							}
+						</p>
+						<span class="wa-message-meta">{demo.messageTimes.final}</span>
+					</div>
+				</div>
+
+				<div class="wa-composer flex items-end gap-2 px-2 py-2.5">
+					<div class="flex min-h-10 flex-1 items-center gap-2 rounded-full bg-white px-3">
+						<Icon
+							name="ph:smiley"
+							class="size-5 shrink-0 text-whatsapp-meta"
+							aria-hidden="true"
+						/>
+						<span class="flex-1 text-[0.6875rem] text-whatsapp-meta/75">
+							{demo.composerHint}
+						</span>
+						<Icon
+							name="ph:paperclip"
+							class="size-4 text-whatsapp-meta"
+							aria-hidden="true"
+						/>
+						<Icon name="ph:camera" class="size-4 text-whatsapp-meta" aria-hidden="true" />
+					</div>
+					<span
+						class="grid size-10 shrink-0 place-items-center rounded-full bg-whatsapp-accent text-white"
+					>
+						<Icon name="ph:microphone" class="size-4.5" aria-hidden="true" />
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="journey-side">
+			<section class="journey-panel" data-journey-panel="booking">
+				<header class="journey-panel-header">
+					<span>
+						<small>{demo.sidePanel.agendaTitle}</small>
+						<strong data-journey-date>{initialScenario.date}</strong>
+					</span>
+					<span class="journey-professional">
+						<i data-journey-professional-initial
+							>{initialScenario.professional.slice(0, 1)}</i
+						>
+						<span data-journey-professional>{initialScenario.professional}</span>
+					</span>
+				</header>
+				<div class="journey-agenda">
+					<div class="journey-agenda-row">
+						<time data-journey-booking-slot-one>{initialScenario.bookingSlots[0]}</time>
+						<span class="journey-agenda-available">
+							<Icon name="ph:clock" class="size-4" />
+							{demo.sidePanel.available}
+						</span>
+					</div>
+					<div class="journey-agenda-row journey-agenda-row--selected">
+						<time data-journey-booking-slot-two>{initialScenario.bookingSlots[1]}</time>
+						<article class="journey-agenda-event">
+							<span data-journey-booking-state>{demo.sidePanel.checking}</span>
+							<strong data-journey-service>{initialScenario.service}</strong>
+							<small data-journey-person>{initialScenario.person}</small>
+						</article>
+					</div>
+					<div class="journey-agenda-row">
+						<time>{demo.sidePanel.sampleBusyTime}</time>
+						<span class="journey-agenda-busy">
+							<strong>{demo.sidePanel.sampleBusyService}</strong>
+							<small>{demo.sidePanel.sampleBusyPerson}</small>
+						</span>
+					</div>
+				</div>
+			</section>
+
+			<section class="journey-panel" data-journey-panel="deposit" hidden>
+				<header class="journey-panel-header">
+					<span>
+						<small>{demo.sidePanel.depositTitle}</small>
+						<strong data-journey-deposit>{initialScenario.deposit}</strong>
+					</span>
+					<span class="journey-state-badge" data-journey-deposit-state>
+						{demo.sidePanel.depositPending}
+					</span>
+				</header>
+				<div class="journey-deposit-grid">
+					<div class="journey-qr-card">
+						<Icon name="ph:qr-code" class="journey-qr-icon" aria-hidden="true" />
+						<strong data-journey-contact>{initialScenario.contact}</strong>
+						<small>{demo.sidePanel.moneyNote}</small>
+					</div>
+					<div class="journey-receipt">
+						<span class="journey-receipt-icon">
+							<Icon name="ph:image-square" class="size-6" aria-hidden="true" />
+						</span>
+						<div>
+							<strong>{demo.sidePanel.receiptReceived}</strong>
+							<small data-journey-person>{initialScenario.person}</small>
+						</div>
+						<button type="button" data-journey-verify disabled>
+							<Icon name="ph:check-circle" class="size-4" aria-hidden="true" />
+							<span data-journey-verify-label>{demo.sidePanel.verifyAction}</span>
+						</button>
+					</div>
+				</div>
+			</section>
+
+			<section class="journey-panel" data-journey-panel="reminder" hidden>
+				<header class="journey-panel-header">
+					<span>
+						<small>{demo.sidePanel.reminderTitle}</small>
+						<strong data-journey-date>{initialScenario.date}</strong>
+					</span>
+					<span class="journey-state-badge">{demo.sidePanel.reminderSent}</span>
+				</header>
+				<div class="journey-appointment-summary">
+					<div class="journey-summary-icon">
+						<Icon name="ph:calendar-check" class="size-7" aria-hidden="true" />
+					</div>
+					<div>
+						<strong data-journey-service>{initialScenario.service}</strong>
+						<span>
+							<span data-journey-old-time>{initialScenario.oldTime}</span>
+							<span data-journey-professional>{initialScenario.professional}</span>
+						</span>
+					</div>
+				</div>
+				<div class="journey-reminder-line">
+					<span>
+						<Icon name="ph:bell-ringing" class="size-5" aria-hidden="true" />
+					</span>
+					<div>
+						<strong>{demo.sidePanel.reminderScheduled}</strong>
+						<small>{demo.sidePanel.reminderTiming}</small>
+					</div>
+				</div>
+			</section>
+
+			<section class="journey-panel" data-journey-panel="reschedule" hidden>
+				<header class="journey-panel-header">
+					<span>
+						<small>{demo.sidePanel.rescheduleTitle}</small>
+						<strong data-journey-new-date>{initialScenario.newDate}</strong>
+					</span>
+					<span class="journey-state-badge" data-journey-reschedule-state>
+						{demo.sidePanel.released}
+					</span>
+				</header>
+				<div class="journey-time-change">
+					<div class="journey-time-card journey-time-card--old">
+						<small>{demo.sidePanel.previousTime}</small>
+						<strong data-journey-old-time>{initialScenario.oldTime}</strong>
+						<span>{demo.sidePanel.released}</span>
+					</div>
+					<Icon
+						name="ph:arrow-right"
+						class="journey-time-arrow size-6"
+						aria-hidden="true"
+					/>
+					<div class="journey-time-card journey-time-card--new">
+						<small>{demo.sidePanel.newTime}</small>
+						<strong data-journey-new-time>{initialScenario.preferredNewSlot}</strong>
+						<span data-journey-reschedule-card-state>{demo.sidePanel.available}</span>
+					</div>
+				</div>
+				<div class="journey-updated-appointment">
+					<Icon name="ph:arrows-clockwise" class="size-5" aria-hidden="true" />
+					<div>
+						<strong data-journey-service>{initialScenario.service}</strong>
+						<small>
+							<span data-journey-person>{initialScenario.person}</span>
+							<span data-journey-professional>{initialScenario.professional}</span>
+						</small>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<div class="journey-demo-footer">
+		<div class="journey-current-state" aria-live="polite">
+			<span class="journey-current-icon">
+				{
+					demo.stages.map((stage, index) => (
+						<Icon
+							name={stageIcons[index]}
+							class="size-4"
+							data-journey-current-icon={stage.id}
+						/>
+					))
+				}
+			</span>
+			<span>
+				<strong data-journey-current-label>{initialStage.label}</strong>
+				<small data-journey-current-description>{initialStage.description}</small>
+			</span>
+		</div>
+		<button type="button" class="journey-replay" data-journey-replay>
+			<Icon name="ph:arrow-counter-clockwise" class="size-4" aria-hidden="true" />
+			{demo.replayLabel}
+		</button>
+	</div>
+
+	<figcaption id="journey-demo-caption" class="sr-only">{demo.label}</figcaption>
+</figure>
+
+<script>
+	type StageId = 'booking' | 'deposit' | 'reminder' | 'reschedule';
+	type Phase = 'initial' | 'typing' | 'ready' | 'processing' | 'resolved';
+
+	type DemoStage = {
+		id: StageId;
+		label: string;
+		description: string;
+	};
+
+	type DemoScenario = {
+		id: string;
+		label: string;
+		contact: string;
+		avatar: string;
+		personTerm: string;
+		person: string;
+		service: string;
+		professional: string;
+		date: string;
+		oldTime: string;
+		bookingSlots: [string, string];
+		newDate: string;
+		newSlots: [string, string];
+		preferredNewSlot: string;
+		deposit: string;
+		booking: {
+			client: string;
+			assistant: string;
+			choiceTemplate: string;
+			finalTemplate: string;
+		};
+		depositFlow: {
+			assistant: string;
+			action: string;
+			client: string;
+			final: string;
+		};
+		reminder: {
+			assistant: string;
+			confirmAction: string;
+			rescheduleAction: string;
+			client: string;
+			final: string;
+		};
+		reschedule: {
+			client: string;
+			assistant: string;
+			choiceTemplate: string;
+			finalTemplate: string;
+		};
+	};
+
+	document.querySelectorAll<HTMLElement>('[data-journey-demo]').forEach((demoElement) => {
+		const scenarios = JSON.parse(demoElement.dataset.scenarios ?? '[]') as DemoScenario[];
+		const stages = JSON.parse(demoElement.dataset.stages ?? '[]') as DemoStage[];
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const timers = new Set<number>();
+		let scenarioIndex = 0;
+		let stageIndex = 0;
+		let automatic = true;
+		let started = false;
+		let selectedTime = '';
+
+		const query = <T extends HTMLElement>(selector: string) =>
+			demoElement.querySelector<T>(selector);
+		const queryAll = <T extends HTMLElement>(selector: string) =>
+			demoElement.querySelectorAll<T>(selector);
+		const labels = {
+			automatic: demoElement.dataset.automaticLabel ?? '',
+			manual: demoElement.dataset.manualLabel ?? '',
+			checking: demoElement.dataset.checkingLabel ?? '',
+			saved: demoElement.dataset.savedLabel ?? '',
+			depositPending: demoElement.dataset.depositPendingLabel ?? '',
+			receipt: demoElement.dataset.receiptLabel ?? '',
+			verifyAction: demoElement.dataset.verifyActionLabel ?? '',
+			verified: demoElement.dataset.verifiedLabel ?? '',
+			released: demoElement.dataset.releasedLabel ?? '',
+			updated: demoElement.dataset.updatedLabel ?? '',
+			available: demoElement.dataset.availableLabel ?? '',
+			newSlot: demoElement.dataset.newSlotLabel ?? '',
+		};
+
+		const clearTimers = () => {
+			timers.forEach((timer) => window.clearTimeout(timer));
+			timers.clear();
+		};
+
+		const schedule = (callback: () => void, delay: number) => {
+			const timer = window.setTimeout(() => {
+				timers.delete(timer);
+				callback();
+			}, delay);
+			timers.add(timer);
+		};
+
+		const setText = (selector: string, value: string) => {
+			queryAll<HTMLElement>(selector).forEach((element) => {
+				element.textContent = value;
+			});
+		};
+
+		const setMode = (isAutomatic: boolean) => {
+			automatic = isAutomatic;
+			const mode = query<HTMLElement>('[data-journey-mode]');
+			if (mode) {
+				mode.textContent = isAutomatic ? labels.automatic : labels.manual;
+			}
+		};
+
+		const setPhase = (phase: Phase) => {
+			demoElement.dataset.phase = phase;
+		};
+
+		const renderSharedScenario = (scenario: DemoScenario) => {
+			setText('[data-journey-avatar]', scenario.avatar);
+			setText('[data-journey-contact]', scenario.contact);
+			setText('[data-journey-person]', scenario.person);
+			setText('[data-journey-service]', scenario.service);
+			setText('[data-journey-professional]', scenario.professional);
+			setText('[data-journey-professional-initial]', scenario.professional.slice(0, 1));
+			setText('[data-journey-date]', scenario.date);
+			setText('[data-journey-new-date]', scenario.newDate);
+			setText('[data-journey-old-time]', scenario.oldTime);
+			setText('[data-journey-deposit]', scenario.deposit);
+			setText('[data-journey-booking-slot-one]', scenario.bookingSlots[0]);
+			setText('[data-journey-booking-slot-two]', scenario.bookingSlots[1]);
+
+			queryAll<HTMLButtonElement>('[data-journey-scenario]').forEach((button) => {
+				button.setAttribute(
+					'aria-pressed',
+					String(button.dataset.journeyScenario === scenario.id),
+				);
+			});
+		};
+
+		const renderStage = (index: number, phase: Phase = 'initial') => {
+			const scenario = scenarios[scenarioIndex];
+			const stage = stages[index];
+			if (!scenario || !stage) return;
+
+			stageIndex = index;
+			selectedTime =
+				stage.id === 'reschedule' ? scenario.preferredNewSlot : scenario.oldTime;
+			demoElement.dataset.stage = stage.id;
+			setPhase(phase);
+			renderSharedScenario(scenario);
+
+			queryAll<HTMLButtonElement>('[data-journey-stage]').forEach((button) => {
+				button.setAttribute(
+					'aria-pressed',
+					String(button.dataset.journeyStage === stage.id),
+				);
+			});
+			queryAll<HTMLElement>('[data-journey-panel]').forEach((panel) => {
+				panel.hidden = panel.dataset.journeyPanel !== stage.id;
+			});
+
+			setText('[data-journey-current-label]', stage.label);
+			setText('[data-journey-current-description]', stage.description);
+
+			const primary = query<HTMLElement>('[data-journey-primary]');
+			const qr = query<HTMLElement>('[data-journey-wa-qr]');
+			const actions = queryAll<HTMLButtonElement>('[data-journey-action]');
+			const verifyButton = query<HTMLButtonElement>('[data-journey-verify]');
+			const bookingState = query<HTMLElement>('[data-journey-booking-state]');
+			const depositState = query<HTMLElement>('[data-journey-deposit-state]');
+			const rescheduleState = query<HTMLElement>('[data-journey-reschedule-state]');
+			const rescheduleCardState = query<HTMLElement>(
+				'[data-journey-reschedule-card-state]',
+			);
+
+			primary?.classList.toggle(
+				'is-hidden',
+				stage.id === 'deposit' || stage.id === 'reminder',
+			);
+			if (qr) qr.hidden = stage.id !== 'deposit';
+			if (verifyButton) verifyButton.disabled = true;
+			setText('[data-journey-verify-label]', labels.verifyAction);
+			if (bookingState) bookingState.textContent = labels.checking;
+			if (depositState) depositState.textContent = labels.depositPending;
+			if (rescheduleState) rescheduleState.textContent = labels.released;
+			if (rescheduleCardState) rescheduleCardState.textContent = labels.available;
+
+			actions.forEach((button) => {
+				button.disabled = phase !== 'ready';
+				button.hidden = false;
+			});
+
+			if (stage.id === 'booking') {
+				setText('[data-journey-primary-text]', scenario.booking.client);
+				setText('[data-journey-assistant-text]', scenario.booking.assistant);
+				actions[0]!.textContent = scenario.bookingSlots[0];
+				actions[1]!.textContent = scenario.bookingSlots[1];
+				setText(
+					'[data-journey-response-text]',
+					scenario.booking.choiceTemplate.replace('{time}', selectedTime),
+				);
+				setText(
+					'[data-journey-final-text]',
+					scenario.booking.finalTemplate.replace('{time}', selectedTime),
+				);
+			}
+
+			if (stage.id === 'deposit') {
+				setText('[data-journey-assistant-text]', scenario.depositFlow.assistant);
+				actions[0]!.textContent = scenario.depositFlow.action;
+				actions[1]!.hidden = true;
+				setText('[data-journey-response-text]', scenario.depositFlow.client);
+				setText('[data-journey-final-text]', scenario.depositFlow.final);
+			}
+
+			if (stage.id === 'reminder') {
+				setText('[data-journey-assistant-text]', scenario.reminder.assistant);
+				actions[0]!.textContent = scenario.reminder.confirmAction;
+				actions[1]!.textContent = scenario.reminder.rescheduleAction;
+				setText('[data-journey-response-text]', scenario.reminder.client);
+				setText('[data-journey-final-text]', scenario.reminder.final);
+			}
+
+			if (stage.id === 'reschedule') {
+				setText('[data-journey-primary-text]', scenario.reschedule.client);
+				setText('[data-journey-assistant-text]', scenario.reschedule.assistant);
+				actions[0]!.textContent = scenario.newSlots[0];
+				actions[1]!.textContent = scenario.newSlots[1];
+				setText(
+					'[data-journey-response-text]',
+					scenario.reschedule.choiceTemplate.replace('{time}', selectedTime),
+				);
+				setText(
+					'[data-journey-final-text]',
+					scenario.reschedule.finalTemplate.replace('{time}', selectedTime),
+				);
+				setText('[data-journey-new-time]', selectedTime);
+			}
+		};
+
+		const resolveStage = (choice?: string) => {
+			const scenario = scenarios[scenarioIndex];
+			const stage = stages[stageIndex];
+			if (!scenario || !stage) return;
+
+			if (stage.id === 'booking') {
+				selectedTime = choice ?? scenario.oldTime;
+				setText(
+					'[data-journey-response-text]',
+					scenario.booking.choiceTemplate.replace('{time}', selectedTime),
+				);
+				setText(
+					'[data-journey-final-text]',
+					scenario.booking.finalTemplate.replace('{time}', selectedTime),
+				);
+				setText('[data-journey-booking-state]', labels.saved);
+			}
+
+			if (stage.id === 'deposit') {
+				setText('[data-journey-deposit-state]', labels.receipt);
+				const verifyButton = query<HTMLButtonElement>('[data-journey-verify]');
+				if (verifyButton) verifyButton.disabled = false;
+			}
+
+			if (stage.id === 'reschedule') {
+				selectedTime = choice ?? scenario.preferredNewSlot;
+				setText(
+					'[data-journey-response-text]',
+					scenario.reschedule.choiceTemplate.replace('{time}', selectedTime),
+				);
+				setText(
+					'[data-journey-final-text]',
+					scenario.reschedule.finalTemplate.replace('{time}', selectedTime),
+				);
+				setText('[data-journey-new-time]', selectedTime);
+				setText('[data-journey-reschedule-state]', labels.updated);
+				setText('[data-journey-reschedule-card-state]', labels.newSlot);
+			}
+
+			setPhase(stage.id === 'deposit' ? 'processing' : 'resolved');
+			queryAll<HTMLButtonElement>('[data-journey-action]').forEach((button) => {
+				button.disabled = true;
+			});
+		};
+
+		const verifyDeposit = () => {
+			setText('[data-journey-deposit-state]', labels.verified);
+			const verifyLabel = query<HTMLElement>('[data-journey-verify-label]');
+			if (verifyLabel) verifyLabel.textContent = labels.verified;
+			const verifyButton = query<HTMLButtonElement>('[data-journey-verify]');
+			if (verifyButton) verifyButton.disabled = true;
+			setPhase('resolved');
+		};
+
+		const queueNextStage = () => {
+			if (!automatic) return;
+			schedule(
+				() => {
+					if (stageIndex < stages.length - 1) {
+						playStage(stageIndex + 1);
+						return;
+					}
+					if (scenarioIndex < scenarios.length - 1) {
+						scenarioIndex += 1;
+						playStage(0);
+					}
+				},
+				reduceMotion.matches ? 0 : 2200,
+			);
+		};
+
+		const playStage = (index: number) => {
+			clearTimers();
+			renderStage(index);
+
+			if (reduceMotion.matches) {
+				renderStage(index, 'ready');
+				resolveStage();
+				if (stages[index]?.id === 'deposit') verifyDeposit();
+				return;
+			}
+
+			schedule(() => setPhase('typing'), 450);
+			schedule(() => {
+				setPhase('ready');
+				queryAll<HTMLButtonElement>('[data-journey-action]').forEach((button) => {
+					if (!button.hidden) button.disabled = false;
+				});
+			}, 1200);
+			schedule(() => {
+				resolveStage();
+				if (stages[index]?.id === 'deposit') {
+					schedule(() => {
+						verifyDeposit();
+						queueNextStage();
+					}, 1100);
+					return;
+				}
+				queueNextStage();
+			}, 3000);
+		};
+
+		queryAll<HTMLButtonElement>('[data-journey-scenario]').forEach((button, index) => {
+			button.addEventListener('click', () => {
+				clearTimers();
+				scenarioIndex = index;
+				setMode(false);
+				renderStage(stageIndex, 'ready');
+				queryAll<HTMLButtonElement>('[data-journey-action]').forEach((action) => {
+					if (!action.hidden) action.disabled = false;
+				});
+			});
+		});
+
+		queryAll<HTMLButtonElement>('[data-journey-stage]').forEach((button, index) => {
+			button.addEventListener('click', () => {
+				clearTimers();
+				setMode(false);
+				renderStage(index, 'ready');
+				queryAll<HTMLButtonElement>('[data-journey-action]').forEach((action) => {
+					if (!action.hidden) action.disabled = false;
+				});
+			});
+		});
+
+		queryAll<HTMLButtonElement>('[data-journey-action]').forEach((button) => {
+			button.addEventListener('click', () => {
+				const stage = stages[stageIndex];
+				const scenario = scenarios[scenarioIndex];
+				if (!stage || !scenario || demoElement.dataset.phase !== 'ready') return;
+				clearTimers();
+				setMode(false);
+
+				if (stage.id === 'reminder' && button.dataset.journeyAction === 'secondary') {
+					renderStage(3, 'ready');
+					queryAll<HTMLButtonElement>('[data-journey-action]').forEach((action) => {
+						if (!action.hidden) action.disabled = false;
+					});
+					return;
+				}
+
+				const choice =
+					stage.id === 'booking'
+						? scenario.bookingSlots[button.dataset.journeyAction === 'primary' ? 0 : 1]
+						: stage.id === 'reschedule'
+							? scenario.newSlots[button.dataset.journeyAction === 'primary' ? 0 : 1]
+							: undefined;
+				resolveStage(choice);
+			});
+		});
+
+		query<HTMLButtonElement>('[data-journey-verify]')?.addEventListener('click', () => {
+			clearTimers();
+			setMode(false);
+			verifyDeposit();
+		});
+
+		query<HTMLButtonElement>('[data-journey-replay]')?.addEventListener('click', () => {
+			scenarioIndex = 0;
+			setMode(true);
+			playStage(0);
+		});
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (!entries[0]?.isIntersecting || started) return;
+				started = true;
+				playStage(0);
+				observer.disconnect();
+			},
+			{ threshold: 0.25 },
+		);
+
+		observer.observe(demoElement);
+	});
+</script>

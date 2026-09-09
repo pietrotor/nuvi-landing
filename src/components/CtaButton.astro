@@ -1,0 +1,40 @@
+---
+import { Icon } from 'astro-icon/components';
+import { site } from '../content/site';
+import { buildWhatsappUrl } from '../lib/whatsapp';
+
+interface Props {
+	location: string;
+	tone?: 'brand' | 'light';
+	class?: string;
+}
+
+const { location, tone = 'brand', class: className } = Astro.props;
+const href = buildWhatsappUrl(site.cta.whatsappMessage);
+---
+
+<a
+	href={href}
+	target="_blank"
+	rel="noreferrer"
+	data-conversion-cta
+	data-location={location}
+	class:list={[
+		'group inline-flex min-h-12 items-center gap-3 rounded-full py-2.5 pr-2.5 pl-5 text-sm font-semibold whitespace-nowrap transition-[background-color,box-shadow,transform] duration-300 ease-out-quint active:scale-[0.98]',
+		tone === 'light'
+			? 'bg-white text-brand-700 shadow-surface hover:bg-brand-50'
+			: 'bg-brand-700 text-white shadow-brand hover:bg-brand-800',
+		className,
+	]}
+>
+	{site.cta.label}
+	<span
+		class:list={[
+			'grid size-8 place-items-center rounded-full transition-transform duration-300 ease-out-quint group-hover:translate-x-0.5',
+			tone === 'light' ? 'bg-brand-100' : 'bg-white/18',
+		]}
+		aria-hidden="true"
+	>
+		<Icon name="ph:arrow-right" class="size-3.5" />
+	</span>
+</a>

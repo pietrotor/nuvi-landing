@@ -1,0 +1,23 @@
+---
+import { site } from '../content/site';
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<span class:list={['inline-flex items-center gap-2.5', className]} translate="no">
+	<img
+		src="/nuvi-logo.svg"
+		alt=""
+		width="499"
+		height="479"
+		class="h-8 w-auto"
+		aria-hidden="true"
+	/>
+	<span class="text-[1.1875rem] font-semibold tracking-[-0.03em] text-ink-950"
+		>{site.name}</span
+	>
+</span>
